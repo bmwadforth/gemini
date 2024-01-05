@@ -12,22 +12,21 @@ var Config configuration
 var IsProduction bool
 
 type configuration struct {
-	ProjectId         string `json:"ProjectId" env:"WEB_TEMPLATE__PROJECTID"`
-	ApiKey            string `json:"ApiKey" env:"WEB_TEMPLATE__APIKEY"`
-	JwtSigningKey     string `json:"jwtSigningKey" env:"WEB_TEMPLATE__JWTSIGNINGKEY"`
-	FireStoreDatabase string `json:"fireStoreDatabase" env:"WEB_TEMPLATE__FIRESTOREDATABASE"`
-	Database          struct {
-		Host     string `json:"host" env:"WEB_TEMPLATE__DATABASE_HOST"`
-		Name     string `json:"name" env:"WEB_TEMPLATE__DATABASE_NAME"`
-		Username string `json:"user" env:"WEB_TEMPLATE__DATABASE_USERNAME"`
-		Password string `json:"pass" env:"WEB_TEMPLATE__DATABASE_PASSWORD"`
-		Port     string `json:"port" env:"WEB_TEMPLATE__DATABASE_PORT"`
-		SSL      bool   `json:"SSL" env:"WEB_TEMPLATE__DATABASE_SSL"`
-	} `json:"database"`
+	ProjectId    string `json:"ProjectId" env:"WEB_TEMPLATE__PROJECTID"`
+	ApiKey       string `json:"ApiKey" env:"WEB_TEMPLATE__APIKEY"`
+	GeminiApiKey string `json:"geminiApiKey" env:"WEB_TEMPLATE__GEMINI_APIKEY"`
 }
 
 func LoadConfiguration() {
-	configFile, err := filepath.Abs("config.json")
+	var configFile string
+	localConfigFile, err := filepath.Abs("config.local.json")
+	defaultConfigFile, err := filepath.Abs("config.json")
+	_, err = os.Stat(localConfigFile)
+	if err == nil {
+		configFile = localConfigFile
+	} else {
+		configFile = defaultConfigFile
+	}
 	if err != nil {
 		SLogger.Fatalf("an error has occurred: %v", err)
 	}
