@@ -12,5 +12,7 @@ message QueryRequest {
 }
 
 message QueryResponse {
-  string response = 1;
+  int32 option = 1;
+  string response = 2;
+  string error = 3;
 }
